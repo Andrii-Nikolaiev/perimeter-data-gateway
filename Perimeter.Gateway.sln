@@ -5,6 +5,14 @@ VisualStudioVersion = 17.14.37111.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.Domain", "src\Perimeter.Gateway.Domain\Perimeter.Gateway.Domain.csproj", "{91706A05-2383-41D7-B66C-76D181F25883}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8C57A620-07C5-4810-9292-C01A62904210}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.Application", "src\Perimeter.Gateway.Application\Perimeter.Gateway.Application.csproj", "{5F67CB11-BEF8-4E74-952E-07393C426D96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.Infrastructure", "src\Perimeter.Gateway.Infrastructure\Perimeter.Gateway.Infrastructure.csproj", "{A650C1AA-A07C-4982-B2CE-37EDAF6D532F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.Api", "src\Perimeter.Gateway.Api\Perimeter.Gateway.Api.csproj", "{BAB7F8CE-C836-499B-8BC2-775D2A711332}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +23,28 @@ Global
 		{91706A05-2383-41D7-B66C-76D181F25883}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91706A05-2383-41D7-B66C-76D181F25883}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91706A05-2383-41D7-B66C-76D181F25883}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F67CB11-BEF8-4E74-952E-07393C426D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F67CB11-BEF8-4E74-952E-07393C426D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F67CB11-BEF8-4E74-952E-07393C426D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F67CB11-BEF8-4E74-952E-07393C426D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A650C1AA-A07C-4982-B2CE-37EDAF6D532F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A650C1AA-A07C-4982-B2CE-37EDAF6D532F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A650C1AA-A07C-4982-B2CE-37EDAF6D532F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A650C1AA-A07C-4982-B2CE-37EDAF6D532F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAB7F8CE-C836-499B-8BC2-775D2A711332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB7F8CE-C836-499B-8BC2-775D2A711332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB7F8CE-C836-499B-8BC2-775D2A711332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB7F8CE-C836-499B-8BC2-775D2A711332}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D9272B7C-2BC7-4E71-9087-923342E53C9E}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F67CB11-BEF8-4E74-952E-07393C426D96} = {8C57A620-07C5-4810-9292-C01A62904210}
+		{A650C1AA-A07C-4982-B2CE-37EDAF6D532F} = {8C57A620-07C5-4810-9292-C01A62904210}
+		{BAB7F8CE-C836-499B-8BC2-775D2A711332} = {8C57A620-07C5-4810-9292-C01A62904210}
 	EndGlobalSection
 EndGlobal
