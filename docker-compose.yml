@@ -1,0 +1,56 @@
+services:
+  platform-store:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_DB: ${PLATFORM_DB_NAME}
+      POSTGRES_USER: ${PLATFORM_DB_USER}
+      POSTGRES_PASSWORD: ${PLATFORM_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - platform-store-data:/var/lib/postgresql
+    networks:
+      - pdg-internal
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  chinook-db:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_DB: ${CHINOOK_DB_NAME}
+      POSTGRES_USER: ${CHINOOK_DB_USER}
+      POSTGRES_PASSWORD: ${CHINOOK_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - chinook-data:/var/lib/postgresql
+    networks:
+      - pdg-internal
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+networks:
+  pdg-internal:
+    driver: bridge
+
+volumes:
+  platform-store-data:
+  chinook-data:
