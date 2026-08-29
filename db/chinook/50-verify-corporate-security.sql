@@ -48,7 +48,7 @@ BEGIN
         JOIN pg_namespace AS n
           ON n.oid = c.relnamespace
         WHERE n.nspname = 'public'
-          AND c.relname IN ('Customer', 'Invoice', 'InvoiceLine')
+          AND c.relname IN ('customer', 'invoice', 'invoice_line')
           AND c.relowner = reader_oid
     ) THEN
         RAISE EXCEPTION
