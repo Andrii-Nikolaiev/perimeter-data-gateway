@@ -61,3 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+###############################################################################
+# Preserve pinned Chinook vendor artifact byte-for-byte.
+###############################################################################
+db/chinook/10-chinook-1.4.5.sql binary
+db/chinook/10-chinook-1.4.5.sha256 text eol=lf
