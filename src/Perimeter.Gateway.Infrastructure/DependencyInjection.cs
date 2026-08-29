@@ -37,9 +37,14 @@ public static class DependencyInjection
 
         services.AddScoped<IPlatformStore, PlatformStoreRepository>();
         services.AddScoped<IAuditWriter, AuditWriter>();
+        services.AddScoped<PlatformStoreProbe>();
 
         services.AddScoped<ICorporateDataReader>(
             _ => new CorporateDataReader(
+                corporateDataSourceConnectionString));
+
+        services.AddScoped<CorporateDataProbe>(
+            _ => new CorporateDataProbe(
                 corporateDataSourceConnectionString));
 
         services.AddSingleton<IClock, SystemClock>();

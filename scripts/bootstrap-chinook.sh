@@ -43,13 +43,23 @@ table_count="$(
 case "$table_count" in
     0)
         echo "Importing Chinook dataset..."
+
+        awk '
+            $0 != "DROP DATABASE IF EXISTS chinook;" &&
+            $0 != "CREATE DATABASE chinook;" &&
+            $0 != "\\c chinook;"
+        ' /bootstrap/db/chinook/10-chinook-1.4.5.sql \
+            > /tmp/chinook-import.sql
+
         psql \
             -h chinook-db \
             -U chinook_owner \
             -d chinook \
             -v ON_ERROR_STOP=1 \
             --single-transaction \
-            -f /bootstrap/db/chinook/10-chinook-1.4.5.sql
+            -f /tmp/chinook-import.sql
+
+        rm -f /tmp/chinook-import.sql
         ;;
     11)
         echo "Chinook dataset already present; import skipped."

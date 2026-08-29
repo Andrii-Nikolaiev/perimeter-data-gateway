@@ -14,7 +14,7 @@ public static class JwtAuthenticationExtensions
     {
         var issuer = configuration["Jwt:Issuer"];
         var audience = configuration["Jwt:Audience"];
-        var signingKey = configuration["JWT_SIGNING_KEY"];
+        var signingKey = configuration["Jwt:SigningKey"];
 
         if (string.IsNullOrWhiteSpace(issuer))
         {
@@ -31,7 +31,7 @@ public static class JwtAuthenticationExtensions
         if (string.IsNullOrWhiteSpace(signingKey))
         {
             throw new InvalidOperationException(
-                "JWT_SIGNING_KEY configuration is required.");
+                "Jwt:SigningKey configuration is required.");
         }
 
         services.AddSingleton<JwtActorClaimsValidator>();

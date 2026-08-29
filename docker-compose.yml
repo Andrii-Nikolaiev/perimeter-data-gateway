@@ -1,12 +1,12 @@
+name: perimeter-data-gateway
+
 services:
   platform-store:
     image: postgres:18.6-alpine
     environment:
-      POSTGRES_DB: ${PLATFORM_DB_NAME}
-      POSTGRES_USER: ${PLATFORM_DB_USER}
-      POSTGRES_PASSWORD: ${PLATFORM_DB_PASSWORD}
-    ports:
-      - "127.0.0.1:5433:5432"
+      POSTGRES_USER: pdg_platform_owner
+      POSTGRES_PASSWORD: ${PLATFORM_OWNER_PASSWORD}
+      POSTGRES_DB: pdg_platform_store
     volumes:
       - platform-store-data:/var/lib/postgresql
     networks:
@@ -15,7 +15,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""
+          "pg_isready -U pdg_platform_owner -d pdg_platform_store"
         ]
       interval: 5s
       timeout: 5s
@@ -26,11 +26,9 @@ services:
   chinook-db:
     image: postgres:18.6-alpine
     environment:
-      POSTGRES_DB: ${CHINOOK_DB_NAME}
-      POSTGRES_USER: ${CHINOOK_DB_USER}
-      POSTGRES_PASSWORD: ${CHINOOK_DB_PASSWORD}
-    ports:
-      - "127.0.0.1:5434:5432"
+      POSTGRES_USER: chinook_owner
+      POSTGRES_PASSWORD: ${CHINOOK_OWNER_PASSWORD}
+      POSTGRES_DB: chinook
     volumes:
       - chinook-data:/var/lib/postgresql
     networks:
@@ -39,12 +37,50 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""
+          "pg_isready -U chinook_owner -d chinook"
         ]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
+    restart: unless-stopped
+
+  pdg-bootstrap:
+    build:
+      context: .
+      dockerfile: docker/Bootstrap.Dockerfile
+    depends_on:
+      platform-store:
+        condition: service_healthy
+      chinook-db:
+        condition: service_healthy
+    environment:
+      PLATFORM_OWNER_PASSWORD: ${PLATFORM_OWNER_PASSWORD}
+      PLATFORM_APP_PASSWORD: ${PLATFORM_APP_PASSWORD}
+      CHINOOK_OWNER_PASSWORD: ${CHINOOK_OWNER_PASSWORD}
+      PDG_READER_PASSWORD: ${PDG_READER_PASSWORD}
+    networks:
+      - pdg-internal
+    restart: "no"
+
+  pdg-api:
+    build:
+      context: .
+      dockerfile: src/Perimeter.Gateway.Api/Dockerfile
+    depends_on:
+      pdg-bootstrap:
+        condition: service_completed_successfully
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__PlatformStore: "Host=platform-store;Database=pdg_platform_store;Username=pdg_platform_app;Password=${PLATFORM_APP_PASSWORD}"
+      ConnectionStrings__CorporateDataSource: "Host=chinook-db;Database=chinook;Username=pdg_reader;Password=${PDG_READER_PASSWORD}"
+      Jwt__Issuer: "https://pdg.local/test-issuer"
+      Jwt__Audience: "pdg-api"
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - pdg-internal
     restart: unless-stopped
 
 networks:

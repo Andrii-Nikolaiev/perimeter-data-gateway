@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vs
+**/bin
+**/obj
+TestResults
+
+.env
+.env.*
+secrets.json
+appsettings.Development.json
+appsettings.Local.json
