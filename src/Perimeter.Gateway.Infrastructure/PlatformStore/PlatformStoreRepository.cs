@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Perimeter.Gateway.Application.Abstractions;
 using Perimeter.Gateway.Application.Errors;
 using Perimeter.Gateway.Domain.Models;
@@ -19,11 +20,13 @@ public sealed class PlatformStoreRepository : IPlatformStore
         string subjectId,
         CancellationToken ct)
     {
-        var entity = await _dbContext.Subjects
-            .AsNoTracking()
-            .SingleOrDefaultAsync(
-                x => x.SubjectId == subjectId,
-                ct);
+        var entity = await ExecuteQueryAsync(
+            () => _dbContext.Subjects
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x => x.SubjectId == subjectId,
+                    ct),
+            ct);
 
         return entity is null
             ? null
@@ -36,11 +39,13 @@ public sealed class PlatformStoreRepository : IPlatformStore
         string actorId,
         CancellationToken ct)
     {
-        var entity = await _dbContext.Actors
-            .AsNoTracking()
-            .SingleOrDefaultAsync(
-                x => x.ActorId == actorId,
-                ct);
+        var entity = await ExecuteQueryAsync(
+            () => _dbContext.Actors
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x => x.ActorId == actorId,
+                    ct),
+            ct);
 
         return entity is null
             ? null
@@ -54,13 +59,15 @@ public sealed class PlatformStoreRepository : IPlatformStore
         string actorId,
         CancellationToken ct)
     {
-        var entity = await _dbContext.Delegations
-            .AsNoTracking()
-            .SingleOrDefaultAsync(
-                x =>
-                    x.SubjectId == subjectId &&
-                    x.ActorId == actorId,
-                ct);
+        var entity = await ExecuteQueryAsync(
+            () => _dbContext.Delegations
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x =>
+                        x.SubjectId == subjectId &&
+                        x.ActorId == actorId,
+                    ct),
+            ct);
 
         return entity is null
             ? null
@@ -74,11 +81,13 @@ public sealed class PlatformStoreRepository : IPlatformStore
         string actorId,
         CancellationToken ct)
     {
-        var capabilities = await _dbContext.ActorCapabilities
-            .AsNoTracking()
-            .Where(x => x.ActorId == actorId)
-            .Select(x => x.Capability)
-            .ToListAsync(ct);
+        var capabilities = await ExecuteQueryAsync(
+            () => _dbContext.ActorCapabilities
+                .AsNoTracking()
+                .Where(x => x.ActorId == actorId)
+                .Select(x => x.Capability)
+                .ToListAsync(ct),
+            ct);
 
         return new HashSet<string>(
             capabilities,
@@ -89,28 +98,34 @@ public sealed class PlatformStoreRepository : IPlatformStore
         string resourceName,
         CancellationToken ct)
     {
-        var resource = await _dbContext.Resources
-            .AsNoTracking()
-            .SingleOrDefaultAsync(
-                x => x.ResourceName == resourceName,
-                ct);
+        var resource = await ExecuteQueryAsync(
+            () => _dbContext.Resources
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x => x.ResourceName == resourceName,
+                    ct),
+            ct);
 
         if (resource is null)
         {
             return null;
         }
 
-        var parameterEntities = await _dbContext.ResourceParameters
-            .AsNoTracking()
-            .Where(x => x.ResourceName == resourceName)
-            .OrderBy(x => x.ParamName)
-            .ToListAsync(ct);
+        var parameterEntities = await ExecuteQueryAsync(
+            () => _dbContext.ResourceParameters
+                .AsNoTracking()
+                .Where(x => x.ResourceName == resourceName)
+                .OrderBy(x => x.ParamName)
+                .ToListAsync(ct),
+            ct);
 
-        var outputFieldEntities = await _dbContext.ResourceOutputFields
-            .AsNoTracking()
-            .Where(x => x.ResourceName == resourceName)
-            .OrderBy(x => x.Ordinal)
-            .ToListAsync(ct);
+        var outputFieldEntities = await ExecuteQueryAsync(
+            () => _dbContext.ResourceOutputFields
+                .AsNoTracking()
+                .Where(x => x.ResourceName == resourceName)
+                .OrderBy(x => x.Ordinal)
+                .ToListAsync(ct),
+            ct);
 
         var parameters = parameterEntities
             .Select(x => new ResourceParameter(
@@ -139,13 +154,15 @@ public sealed class PlatformStoreRepository : IPlatformStore
             string resourceName,
             CancellationToken ct)
     {
-        var entity = await _dbContext.SubjectResourcePermissions
-            .AsNoTracking()
-            .SingleOrDefaultAsync(
-                x =>
-                    x.SubjectId == subjectId &&
-                    x.ResourceName == resourceName,
-                ct);
+        var entity = await ExecuteQueryAsync(
+            () => _dbContext.SubjectResourcePermissions
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x =>
+                        x.SubjectId == subjectId &&
+                        x.ResourceName == resourceName,
+                    ct),
+            ct);
 
         if (entity is null)
         {
@@ -174,17 +191,61 @@ public sealed class PlatformStoreRepository : IPlatformStore
             string dimension,
             CancellationToken ct)
     {
-        var values = await _dbContext.SubjectRowScopes
-            .AsNoTracking()
-            .Where(x =>
-                x.SubjectId == subjectId &&
-                x.ResourceName == resourceName &&
-                x.Dimension == dimension)
-            .Select(x => x.AllowedValue)
-            .ToListAsync(ct);
+        var values = await ExecuteQueryAsync(
+            () => _dbContext.SubjectRowScopes
+                .AsNoTracking()
+                .Where(x =>
+                    x.SubjectId == subjectId &&
+                    x.ResourceName == resourceName &&
+                    x.Dimension == dimension)
+                .Select(x => x.AllowedValue)
+                .ToListAsync(ct),
+            ct);
 
         return new HashSet<string>(
             values,
             StringComparer.Ordinal);
+    }
+
+    private static async Task<T> ExecuteQueryAsync<T>(
+        Func<Task<T>> query,
+        CancellationToken ct)
+    {
+        try
+        {
+            return await query();
+        }
+        catch (OperationCanceledException)
+            when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (PdgException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+            when (ContainsNpgsqlException(ex))
+        {
+            throw new PdgException(
+                PdgErrorCategory.PlatformStoreUnavailable,
+                ex);
+        }
+    }
+
+    private static bool ContainsNpgsqlException(
+        Exception exception)
+    {
+        for (Exception? current = exception;
+             current is not null;
+             current = current.InnerException)
+        {
+            if (current is NpgsqlException)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

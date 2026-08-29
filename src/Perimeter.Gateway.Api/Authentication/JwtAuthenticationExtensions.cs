@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Perimeter.Gateway.Api.Contracts;
 using Perimeter.Gateway.Application.Errors;
 
 namespace Perimeter.Gateway.Api.Authentication;
@@ -88,6 +89,24 @@ public static class JwtAuthenticationExtensions
                         }
 
                         return Task.CompletedTask;
+                    },
+
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+
+                        if (context.Response.HasStarted)
+                        {
+                            return;
+                        }
+
+                        context.Response.StatusCode =
+                            StatusCodes.Status401Unauthorized;
+
+                        await context.Response.WriteAsJsonAsync(
+                            new ErrorResponse(
+                                StatusCodes.Status401Unauthorized,
+                                PdgErrorCategory.AuthenticationFailed));
                     }
                 };
             });
