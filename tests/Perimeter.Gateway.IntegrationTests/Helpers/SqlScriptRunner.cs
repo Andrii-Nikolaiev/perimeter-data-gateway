@@ -9,7 +9,7 @@ public static class SqlScriptRunner
         string database,
         string username,
         string containerScriptPath,
-        IReadOnlyDictionary<string, string>? variables = null,
+        IReadOnlyDictionary<string, string>? variableEnvironmentNames = null,
         bool singleTransaction = false,
         CancellationToken cancellationToken = default)
     {
@@ -29,21 +29,36 @@ public static class SqlScriptRunner
             command.Add("--single-transaction");
         }
 
-        if (variables is not null)
+        if (variableEnvironmentNames is not null)
         {
-            foreach (var variable in variables)
+            foreach (var variable in variableEnvironmentNames)
             {
+                ValidateEnvironmentVariableName(
+                    variable.Value);
+
                 command.Add("-v");
-                command.Add($"{variable.Key}={variable.Value}");
+                command.Add(
+                    $"{variable.Key}=\"${variable.Value}\"");
             }
         }
 
         command.Add("-f");
         command.Add(containerScriptPath);
 
-        var result = await container.ExecAsync(
-            command,
-            cancellationToken);
+        var shellCommand =
+            string.Join(
+                " ",
+                command);
+
+        var result =
+            await container.ExecAsync(
+                new[]
+                {
+                    "/bin/sh",
+                    "-c",
+                    shellCommand
+                },
+                cancellationToken);
 
         if (result.ExitCode != 0)
         {
@@ -51,6 +66,22 @@ public static class SqlScriptRunner
                 $"psql failed for {containerScriptPath}. " +
                 $"Exit code: {result.ExitCode}. " +
                 $"stderr: {result.Stderr}");
+        }
+    }
+
+    private static void ValidateEnvironmentVariableName(
+        string name)
+    {
+        if (string.IsNullOrWhiteSpace(name) ||
+            !(char.IsLetter(name[0]) || name[0] == '_') ||
+            name.Any(
+                character =>
+                    !(char.IsLetterOrDigit(character) ||
+                      character == '_')))
+        {
+            throw new ArgumentException(
+                "Invalid environment variable name.",
+                nameof(name));
         }
     }
 }

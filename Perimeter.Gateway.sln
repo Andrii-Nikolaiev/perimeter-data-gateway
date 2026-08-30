@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.UnitTests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.IntegrationTests", "tests\Perimeter.Gateway.IntegrationTests\Perimeter.Gateway.IntegrationTests.csproj", "{DEA3DF4D-08F1-4407-BBD1-4FE6CCF275EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perimeter.Gateway.AcceptanceTests", "tests\Perimeter.Gateway.AcceptanceTests\Perimeter.Gateway.AcceptanceTests.csproj", "{007C220D-4A68-40CE-967D-19F0478E6B26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{DEA3DF4D-08F1-4407-BBD1-4FE6CCF275EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEA3DF4D-08F1-4407-BBD1-4FE6CCF275EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEA3DF4D-08F1-4407-BBD1-4FE6CCF275EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{007C220D-4A68-40CE-967D-19F0478E6B26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{007C220D-4A68-40CE-967D-19F0478E6B26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{007C220D-4A68-40CE-967D-19F0478E6B26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{007C220D-4A68-40CE-967D-19F0478E6B26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +68,6 @@ Global
 		{BAB7F8CE-C836-499B-8BC2-775D2A711332} = {8C57A620-07C5-4810-9292-C01A62904210}
 		{40B50927-6945-443C-868F-82030BA3705F} = {BE7FB38F-D453-432A-AD5A-992A1817D64D}
 		{DEA3DF4D-08F1-4407-BBD1-4FE6CCF275EC} = {BE7FB38F-D453-432A-AD5A-992A1817D64D}
+		{007C220D-4A68-40CE-967D-19F0478E6B26} = {BE7FB38F-D453-432A-AD5A-992A1817D64D}
 	EndGlobalSection
 EndGlobal

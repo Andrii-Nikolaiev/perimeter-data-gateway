@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Npgsql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Perimeter.Gateway.Api\Perimeter.Gateway.Api.csproj" />
+    <ProjectReference Include="..\..\src\Perimeter.Gateway.Application\Perimeter.Gateway.Application.csproj" />
+    <ProjectReference Include="..\..\src\Perimeter.Gateway.Domain\Perimeter.Gateway.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Perimeter.Gateway.Infrastructure\Perimeter.Gateway.Infrastructure.csproj" />
+    <ProjectReference Include="..\Perimeter.Gateway.IntegrationTests\Perimeter.Gateway.IntegrationTests.csproj" />
+  </ItemGroup>
+
+</Project>

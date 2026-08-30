@@ -1,6 +1,15 @@
-@Perimeter.Gateway.Api_HostAddress = http://localhost:5178
+@HostAddress = http://127.0.0.1:8080
+@JwtToken = REPLACE_WITH_VALID_JWT
 
-GET {{Perimeter.Gateway.Api_HostAddress}}/weatherforecast/
+### Readiness
+
+GET {{HostAddress}}/health/ready
 Accept: application/json
+
+### SalesSummary
+
+GET {{HostAddress}}/api/resources/SalesSummary
+Accept: application/json
+Authorization: Bearer {{JwtToken}}
 
 ###

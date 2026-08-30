@@ -18,7 +18,11 @@ public sealed class CorporateDataIntegrationFixture : IAsyncLifetime
         Container = PostgreSqlContainerFactory.Create(
             DatabaseName,
             OwnerUsername,
-            OwnerPassword);
+            OwnerPassword,
+            new Dictionary<string, string>
+            {
+                ["PDG_READER_PASSWORD"] = RuntimePassword
+            });
     }
 
     public PostgreSqlContainer Container { get; }
@@ -80,7 +84,7 @@ public sealed class CorporateDataIntegrationFixture : IAsyncLifetime
             "/bootstrap/db/chinook/30-create-pdg-reader.sql",
             new Dictionary<string, string>
             {
-                ["pdg_reader_password"] = RuntimePassword
+                ["pdg_reader_password"] = "PDG_READER_PASSWORD"
             },
             cancellationToken: ct);
 

@@ -22,7 +22,11 @@ public sealed class PlatformStoreIntegrationFixture : IAsyncLifetime
         Container = PostgreSqlContainerFactory.Create(
             DatabaseName,
             OwnerUsername,
-            OwnerPassword);
+            OwnerPassword,
+            new Dictionary<string, string>
+            {
+                ["PLATFORM_APP_PASSWORD"] = RuntimePassword
+            });
     }
 
     public PostgreSqlContainer Container { get; }
@@ -74,7 +78,7 @@ public sealed class PlatformStoreIntegrationFixture : IAsyncLifetime
             "/bootstrap/db/platform/20-create-platform-runtime-role.sql",
             new Dictionary<string, string>
             {
-                ["platform_app_password"] = RuntimePassword
+                ["platform_app_password"] = "PLATFORM_APP_PASSWORD"
             });
 
         await SqlScriptRunner.RunAsync(

@@ -74,8 +74,13 @@ public sealed class ErrorHandlingMiddleware
             throw exception;
         }
 
-        _logger.LogError(
-            "Request failed. Category={Category}, ExceptionType={ExceptionType}, TraceIdentifier={TraceIdentifier}",
+        _logger.Log(
+            statusCode >= StatusCodes.Status500InternalServerError
+                ? LogLevel.Error
+                : LogLevel.Warning,
+            statusCode >= StatusCodes.Status500InternalServerError
+                ? "Request failed. Category={Category}, ExceptionType={ExceptionType}, TraceIdentifier={TraceIdentifier}"
+                : "Request rejected. Category={Category}, ExceptionType={ExceptionType}, TraceIdentifier={TraceIdentifier}",
             category,
             exception.GetType().FullName,
             context.TraceIdentifier);

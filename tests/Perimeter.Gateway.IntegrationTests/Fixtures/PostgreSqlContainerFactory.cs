@@ -9,21 +9,35 @@ public static class PostgreSqlContainerFactory
     public static PostgreSqlContainer Create(
         string database,
         string username,
-        string password)
+        string password,
+        IReadOnlyDictionary<string, string>? environmentVariables = null)
     {
         var repositoryRoot = FindRepositoryRoot();
         var databaseScriptsPath = Path.Combine(
             repositoryRoot,
             "db");
 
-        return new PostgreSqlBuilder(PostgreSqlImage)
-            .WithDatabase(database)
-            .WithUsername(username)
-            .WithPassword(password)
-            .WithResourceMapping(
-                new DirectoryInfo(databaseScriptsPath),
-                "/bootstrap/db")
-            .Build();
+        var builder =
+            new PostgreSqlBuilder(PostgreSqlImage)
+                .WithDatabase(database)
+                .WithUsername(username)
+                .WithPassword(password)
+                .WithResourceMapping(
+                    new DirectoryInfo(databaseScriptsPath),
+                    "/bootstrap/db");
+
+        if (environmentVariables is not null)
+        {
+            foreach (var variable in environmentVariables)
+            {
+                builder =
+                    builder.WithEnvironment(
+                        variable.Key,
+                        variable.Value);
+            }
+        }
+
+        return builder.Build();
     }
 
     private static string FindRepositoryRoot()
