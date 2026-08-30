@@ -1,0 +1,65 @@
+PERIMETER DATA GATEWAY (PDG) v0.1
+PROJECT NOTICE
+
+Project:
+Perimeter Data Gateway (PDG)
+
+Description:
+Perimeter Data Gateway is an independently designed and implemented
+software engineering project that provides a controlled gateway between
+authenticated clients and permitted corporate data.
+
+The project demonstrates an architecture based on explicit identity,
+delegation, capability, resource permissions, row-level access scope,
+restricted database roles, auditing, deterministic bootstrap,
+containerized deployment, integration testing, acceptance testing,
+restart/recovery verification, and performance measurement.
+
+Author:
+Andrii Nikolaiev
+
+Development period:
+27 August 2026 - 30 August 2026
+
+Status:
+PDG v0.1 engineering implementation completed.
+
+Final acceptance result:
+28 tests total
+0 errors
+0 failures
+0 skipped
+
+Final engineering commit:
+554211f
+feat: complete pdg v0.1 acceptance and engineering validation
+
+Repository:
+https://github.com/Andrii-Nikolaiev/perimeter-data-gateway
+
+Authorship and copyright:
+Copyright (c) 2026 Andrii Nikolaiev.
+
+Perimeter Data Gateway (PDG) is an independent software engineering
+project authored by Andrii Nikolaiev.
+
+Copyright in the original source code, documentation, tests, scripts,
+and other project materials authored specifically for PDG is held by
+Andrii Nikolaiev, except where otherwise noted.
+
+License:
+The project is distributed under the MIT License. See the LICENSE file
+in this repository.
+
+This PROJECT NOTICE records the authorship, development period, and
+engineering status of the project. It does not replace or restrict the
+terms of the MIT License.
+
+Third-party materials:
+Third-party software, frameworks, packages, sample databases, container
+images, and other external components used by the project remain subject
+to their respective copyright notices and license terms.
+
+Purpose:
+This project was created as an independent engineering work and portfolio
+demonstration.
